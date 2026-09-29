@@ -1,0 +1,28 @@
+name: testes
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  testes:
+    runs-on: ${{ matrix.so }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        so: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # Os juizes sao os 42 exemplos normativos do §5.4 da RFC 3986 e o
+      # System.Uri da propria maquina -- e a matriz de tres sistemas testa
+      # contra tres builds diferentes dele.
+      - name: testes
+        run: dotnet test testes/Uri.Testes/Uri.Testes.csproj --nologo -v q
